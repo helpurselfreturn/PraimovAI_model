@@ -1,172 +1,596 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PraimovAi MODEL</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>PraimAI Bot - Твой умный помощник в Telegram</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #8b5cf6;
+      --accent: #06b6d4;
+      --bg-dark: #0f0f23;
+      --bg-card: #1a1a2e;
+      --bg-glass: rgba(255, 255, 255, 0.05);
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: rgba(255, 255, 255, 0.1);
+      --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+      --gradient-accent: linear-gradient(135deg, var(--accent), var(--primary));
+    }
+
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
+
     body {
-      font-family: 'Courier New', Courier, monospace;
-      background-color: #1e1e2f;
-      color: #c5c5c5;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
       line-height: 1.6;
-      padding: 20px;
-      font-size: 16px;
+      overflow-x: hidden;
     }
+
+    /* Animated background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+      animation: pulse 4s ease-in-out infinite alternate;
+      z-index: -1;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.7; }
+    }
+
+    /* Header */
     header {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      padding: 2rem 0;
       text-align: center;
-      padding: 20px;
-      border-bottom: 1px solid #3d3d5c;
-      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
     }
-    header a {
-      color: #9a6e3b;
-      font-size: 2.5em;
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .logo {
+      font-size: 3rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { filter: brightness(1); }
+      to { filter: brightness(1.2); }
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: var(--gradient);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 50px;
       text-decoration: none;
-      font-weight: normal;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
     }
+
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .cta-button:hover::before {
+      left: 100%;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Container */
     .container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
     }
-    .model-card {
-      background-color: #2c2c3c;
-      border-radius: 8px;
-      width: 280px;
-      padding: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+
+    /* Cards */
+    .card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gradient);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+      border-color: var(--primary);
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-title::before {
+      content: '●';
+      color: var(--primary);
+      font-size: 1.2rem;
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .feature-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Commands */
+    .command-list {
+      display: grid;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .command-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
       transition: all 0.3s ease;
     }
-    .model-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 15px rgba(0,0,0,0.7);
+
+    .command-item:hover {
+      border-color: var(--primary);
+      transform: translateX(5px);
     }
-    .model-card h3 {
-      font-size: 1.6em;
-      color: #9a6e3b;
-      margin-bottom: 10px;
-      text-transform: capitalize;
+
+    .command-code {
+      background: var(--primary);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      font-weight: 500;
+      min-width: fit-content;
     }
-    .model-card p {
-      margin: 5px 0;
-      font-size: 1em;
-      color: #e0e0e0;
+
+    .command-desc {
+      color: var(--text-secondary);
+      flex: 1;
     }
+
+    /* Models Table */
+    .models-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      background: var(--bg-glass);
+      border-radius: 15px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .models-table th {
+      background: var(--gradient);
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .models-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .models-table tr:hover {
+      background: var(--bg-glass);
+    }
+
+    .provider-badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    /* Footer */
     footer {
+      background: var(--bg-card);
+      padding: 3rem 0;
       text-align: center;
-      padding: 15px;
-      background-color: #1a1a2b;
-      border-top: 1px solid #3d3d5c;
-      color: #c5c5c5;
-      margin-top: 30px;
-      font-size: 0.9em;
+      margin-top: 4rem;
+      border-top: 1px solid var(--border);
     }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .footer-logo {
+      font-size: 2rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+
+    .footer-text {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .logo {
+        font-size: 2rem;
+      }
+      
+      .subtitle {
+        font-size: 1.1rem;
+      }
+      
+      .container {
+        padding: 2rem 1rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .command-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      
+      .models-table {
+        font-size: 0.8rem;
+      }
+      
+      .models-table th,
+      .models-table td {
+        padding: 0.5rem;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .card:nth-child(2) { animation-delay: 0.1s; }
+    .card:nth-child(3) { animation-delay: 0.2s; }
+    .card:nth-child(4) { animation-delay: 0.3s; }
+    .card:nth-child(5) { animation-delay: 0.4s; }
   </style>
 </head>
 <body>
-
+  <div class="bg-animation"></div>
+  
   <header>
-    <a href="https://t.me/PraimovAI_bot">PraimovAI Model</a>
+    <div class="header-content">
+      <h1 class="logo">PraimAI Bot</h1>
+      <p class="subtitle">Твой умный помощник в Telegram • Неограниченные возможности ИИ</p>
+      <a href="https://t.me/PraimAii" class="cta-button">🚀 Начать общение</a>
+    </div>
   </header>
 
   <div class="container">
-    <!-- Генерация карточек моделей -->
-    
-    <div class="model-card">
-      <h3>DeepSeek Reasoning</h3>
-      <p><strong>Провайдер:</strong> Azure</p>
-      <p><strong>Описание:</strong> Улучшенная версия DeepSeek для расширенного reasoning и анализа больших объемов данных.</p>
+    <div class="card">
+      <h2 class="card-title">🌟 Возможности</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Неограниченное общение</h3>
+          <p>В личных сообщениях и группах с сохранением контекста</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎤</div>
+          <h3>Голосовые сообщения</h3>
+          <p>Получай ответы в голосовом формате</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>Работа с изображениями</h3>
+          <p>Генерация и редактирование картинок</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔥</div>
+          <h3>NSFW-режим</h3>
+          <p>Без цензуры и ограничений</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Быстрые ответы</h3>
+          <p>Молниеносная скорость обработки</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎭</div>
+          <h3>Персонажи</h3>
+          <p>Общение с разными AI-персонажами</p>
+        </div>
+      </div>
     </div>
 
-    <div class="model-card">
-      <h3>Grok</h3>
-      <p><strong>Провайдер:</strong> Azure</p>
-      <p><strong>Описание:</strong> Нейросеть для интеллектуального анализа текстов и обработки сложных запросов.</p>
+    <div class="card">
+      <h2 class="card-title">⚡ Основные команды</h2>
+      <div class="command-list">
+        <div class="command-item">
+          <div class="command-code">/ask [вопрос]</div>
+          <div class="command-desc">Задать вопрос боту (работает в группах)</div>
+        </div>
+        <div class="command-item">
+          <div class="command-code">/reset</div>
+          <div class="command-desc">Очистить контекст разговора</div>
+        </div>
+        <div class="command-item">
+          <div class="command-code">расскажи [текст]</div>
+          <div class="command-desc">Получить голосовой ответ</div>
+        </div>
+        <div class="command-item">
+          <div class="command-code">/profile</div>
+          <div class="command-desc">Выбрать модель ИИ</div>
+        </div>
+        <div class="command-item">
+          <div class="command-code">/char</div>
+          <div class="command-desc">Выбрать персонажа для общения</div>
+        </div>
+        <div class="command-item">
+          <div class="command-code">/lang</div>
+          <div class="command-desc">Сменить язык интерфейса</div>
+        </div>
+      </div>
     </div>
 
-    <div class="model-card">
-      <h3>Llamascout</h3>
-      <p><strong>Провайдер:</strong> Cloudflare</p>
-      <p><strong>Описание:</strong> Модель для масштабируемого анализа и обучения на больших данных.</p>
+    <div class="card">
+      <h2 class="card-title">🎨 Работа с изображениями</h2>
+      <div class="command-list">
+        <div class="command-item">
+          <div class="command-code">/img [prompt]</div>
+          <div class="command-desc">Генерация картинок (NSFW разрешено)</div>
+        </div>
+        <div class="command-item">
+          <div class="command-code">/gpt [prompt]</div>
+          <div class="command-desc">Редактирование фото (как GPT/DALL·E) • Прикрепите изображение</div>
+        </div>
+      </div>
     </div>
 
-    <div class="model-card">
-      <h3>Mistral</h3>
-      <p><strong>Провайдер:</strong> Cloudflare</p>
-      <p><strong>Описание:</strong> Компактная и эффективная модель для обработки текста и изображений.</p>
+    <div class="card">
+      <h2 class="card-title">🔞 18+ Возможности</h2>
+      <div class="command-list">
+        <div class="command-item">
+          <div class="command-code">/evil [текст]</div>
+          <div class="command-desc">Честные, жёсткие ответы без фильтров</div>
+        </div>
+        <div class="command-item">
+          <div class="command-code">/img [nsfw prompt]</div>
+          <div class="command-desc">Генерация контента для взрослых</div>
+        </div>
+      </div>
     </div>
 
-    <div class="model-card">
-      <h3>OpenAI</h3>
-      <p><strong>Провайдер:</strong> Azure</p>
-      <p><strong>Описание:</strong> Мощная модель генерации текста с поддержкой различных задач и форматов.</p>
+    <div class="card">
+      <h2 class="card-title">🤖 Доступные модели ИИ</h2>
+      <table class="models-table">
+        <thead>
+          <tr>
+            <th>Модель</th>
+            <th>Провайдер</th>
+            <th>Описание</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>DeepSeek Reasoning</strong></td>
+            <td><span class="provider-badge">Azure</span></td>
+            <td>Расширенная логика и глубокий анализ</td>
+          </tr>
+          <tr>
+            <td><strong>Grok</strong></td>
+            <td><span class="provider-badge">Azure</span></td>
+            <td>Интеллектуальный разбор сложных текстов</td>
+          </tr>
+          <tr>
+            <td><strong>Llamascout</strong></td>
+            <td><span class="provider-badge">Cloudflare</span></td>
+            <td>Масштабируемая аналитика данных</td>
+          </tr>
+          <tr>
+            <td><strong>Mistral</strong></td>
+            <td><span class="provider-badge">Cloudflare</span></td>
+            <td>Компактная и эффективная модель</td>
+          </tr>
+          <tr>
+            <td><strong>OpenAI</strong></td>
+            <td><span class="provider-badge">Azure</span></td>
+            <td>Универсальная модель для текста и идей</td>
+          </tr>
+          <tr>
+            <td><strong>OpenAI Fast</strong></td>
+            <td><span class="provider-badge">Azure</span></td>
+            <td>Приоритет — скорость общения</td>
+          </tr>
+          <tr>
+            <td><strong>OpenAI Large</strong></td>
+            <td><span class="provider-badge">Azure</span></td>
+            <td>Для масштабных и сложных задач</td>
+          </tr>
+          <tr>
+            <td><strong>OpenAI Reasoning</strong></td>
+            <td><span class="provider-badge">Azure</span></td>
+            <td>Глубокий логический анализ</td>
+          </tr>
+          <tr>
+            <td><strong>Phi</strong></td>
+            <td><span class="provider-badge">Azure</span></td>
+            <td>Работа с инструкциями и медиа</td>
+          </tr>
+          <tr>
+            <td><strong>Qwen Coder</strong></td>
+            <td><span class="provider-badge">Scaleway</span></td>
+            <td>Оптимизация программного кода</td>
+          </tr>
+          <tr>
+            <td><strong>SearchGPT</strong></td>
+            <td><span class="provider-badge">Azure</span></td>
+            <td>Поиск с GPT-возможностями</td>
+          </tr>
+          <tr>
+            <td><strong>Bidara</strong></td>
+            <td><span class="provider-badge">NASA</span></td>
+            <td>Для научных исследований</td>
+          </tr>
+          <tr>
+            <td><strong>Evil</strong></td>
+            <td><span class="provider-badge">Cloudflare</span></td>
+            <td>Креативный NSFW-контент</td>
+          </tr>
+          <tr>
+            <td><strong>Unity</strong></td>
+            <td><span class="provider-badge">Cloudflare</span></td>
+            <td>Максимальная свобода и интеллект</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <div class="model-card">
-      <h3>OpenAI Fast</h3>
-      <p><strong>Провайдер:</strong> Azure</p>
-      <p><strong>Описание:</strong> Оптимизированная версия OpenAI с приоритетом на скорость обработки.</p>
+    <div class="card">
+      <h2 class="card-title">⚠️ Важная информация</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+        Бот не несёт ответственности за контент, созданный пользователями. 
+        Используйте возможности осознанно и в соответствии с законодательством.
+      </p>
+      <p style="color: var(--text-secondary);">
+        Контент 18+ предназначен только для совершеннолетних пользователей.
+      </p>
     </div>
-
-    <div class="model-card">
-      <h3>OpenAI Large</h3>
-      <p><strong>Провайдер:</strong> Azure</p>
-      <p><strong>Описание:</strong> Расширенная версия OpenAI для сложных и масштабных задач генерации текста.</p>
-    </div>
-
-    <div class="model-card">
-      <h3>OpenAI Reasoning</h3>
-      <p><strong>Провайдер:</strong> Azure</p>
-      <p><strong>Описание:</strong> Модель для глубокого анализа и логических выводов на основе текста.</p>
-    </div>
-
-    <div class="model-card">
-      <h3>Phi</h3>
-      <p><strong>Провайдер:</strong> Azure</p>
-      <p><strong>Описание:</strong> Специализированная модель для обработки инструкций и работы с мультимедийным контентом.</p>
-    </div>
-
-    <div class="model-card">
-      <h3>Qwen Coder</h3>
-      <p><strong>Провайдер:</strong> Scaleway</p>
-      <p><strong>Описание:</strong> Модель, ориентированная на программирование и кодогенерацию на различных языках.</p>
-    </div>
-
-    <div class="model-card">
-      <h3>SearchGPT</h3>
-      <p><strong>Провайдер:</strong> Azure</p>
-      <p><strong>Описание:</strong> Модель для поиска и обработки текстовой информации с использованием GPT-технологий.</p>
-    </div>
-
-    <div class="model-card">
-      <h3>Bidara</h3>
-      <p><strong>Провайдер:</strong> NASA</p>
-      <p><strong>Описание:</strong> Биомиметическая нейросеть для научных исследований и инновационных решений.</p>
-    </div>
-
-    <div class="model-card">
-      <h3>Evil</h3>
-      <p><strong>Провайдер:</strong> Cloudflare</p>
-      <p><strong>Описание:</strong> Творческая нейросеть для генерации нестандартного и нецензурированного контента.</p>
-    </div>
-
-    <div class="model-card">
-      <h3>Unity</h3>
-      <p><strong>Провайдер:</strong> Cloudflare</p>
-      <p><strong>Описание:</strong> Агент с расширенными возможностями взаимодействия и обработки запросов без ограничений.</p>
-    </div>
-
   </div>
 
   <footer>
-    <p>© 2025 Все права защищены. Сделано с любовью TgPraimov.</p>
+    <div class="footer-content">
+      <div class="footer-logo">PraimAI Bot</div>
+      <p class="footer-text">© 2025 TgPraimov. Все права защищены.</p>
+      <p class="footer-text">Найди <strong>@PraimAii</strong> в Telegram и начни общение прямо сейчас!</p>
+    </div>
   </footer>
-
 </body>
 </html>
-
