@@ -3,188 +3,742 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>PraimAI Bot — ИИ-чат в Telegram</title>
+  <title>PraimAI Bot - Твой умный помощник в Telegram</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #fff;
-      color: #000;
+    :root {
+      --primary: #000000;
+      --primary-light: #333333;
+      --secondary: #0070f3;
+      --accent: #7c3aed;
+      --success: #00d9ff;
+      --bg-main: #ffffff;
+      --bg-secondary: #fafafa;
+      --bg-card: #ffffff;
+      --text-primary: #000000;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --border: #e1e1e1;
+      --border-light: #f0f0f0;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      --shadow-hover: 0 16px 70px rgba(0, 0, 0, 0.2);
+      --gradient: linear-gradient(135deg, var(--secondary), var(--accent));
+      --gradient-text: linear-gradient(135deg, var(--secondary), var(--accent));
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-main);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Header */
     header {
-            position: absolute;
+      background: var(--bg-main);
+      padding: 4rem 0 6rem;
+      text-align: center;
+      position: relative;
+      border-bottom: 1px solid var(--border-light);
+      overflow: hidden;
+    }
+
+    .header-banner {
+      position: absolute;
       top: 0;
       left: 0;
       right: 0;
       height: 300px;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 112, 243, 0.3)), url('https://i.pinimg.com/originals/46/a1/80/46a180f437b2aa6cf0ca326010558bdf.gif');
       background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 112, 243, 0.3)), url('https://images-ext-1.discordapp.net/external/HmiebNXjNf-vDc71nMBhuEZpwZfxbWTNs7XaiPwPApM/https/giffiles.alphacoders.com/168/168942.gif?width=400&height=225');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
-      color: #fff;
-      padding: 6rem 2rem 8rem;
-      text-align: center;
+      z-index: 1;
     }
-    header h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      animation: float 3s ease-in-out infinite;
+
+    .header-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, transparent 0%, var(--bg-main) 100%);
+      z-index: 2;
     }
-    header p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-      opacity: 0.9;
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 3;
+      margin-top: 150px;
     }
+
+    .logo {
+      font-size: 4rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.05em;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .subtitle {
+      font-size: 1.5rem;
+      color: var(--text-secondary);
+      margin-bottom: 3rem;
+      font-weight: 400;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+    }
+
     .cta-button {
-      background: #000;
-      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--primary);
+      color: white;
       padding: 1rem 2rem;
       border-radius: 8px;
-      font-weight: 600;
       text-decoration: none;
-      transition: 0.3s ease;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
     }
+
     .cta-button:hover {
-      background: #333;
+      background: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .card:hover {
+      border-color: var(--border);
+      box-shadow: var(--shadow);
       transform: translateY(-2px);
     }
-    .container {
-      max-width: 960px;
-      margin: auto;
-      padding: 3rem 1.5rem;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #e1e1e1;
-      border-radius: 12px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
-    }
-    .card h2 {
+
+    .card-title {
       font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: #000;
-    }
-    .command-item, .model-item {
-      background: #fafafa;
-      border: 1px solid #f0f0f0;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 0.75rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
     }
-    .command-item code {
-      background: #000;
-      color: #fff;
-      padding: 0.3rem 0.6rem;
-      border-radius: 4px;
-      margin-bottom: 0.3rem;
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .feature-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: left;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      border-color: var(--secondary);
+      box-shadow: 0 4px 20px rgba(0, 112, 243, 0.1);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Commands */
+    .command-list {
+      display: grid;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+
+    .command-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .command-item:hover {
+      border-color: var(--secondary);
+      background: var(--bg-card);
+    }
+
+    .command-code {
+      background: var(--primary);
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
       font-size: 0.85rem;
+      font-weight: 500;
+      white-space: nowrap;
     }
-    ul {
-      padding-left: 1rem;
+
+    .command-desc {
+      color: var(--text-secondary);
+      flex: 1;
+      font-size: 0.9rem;
     }
+
+    /* Disclaimer */
     .disclaimer {
       background: #fff7ed;
       border: 1px solid #fed7aa;
       border-radius: 8px;
       padding: 1.5rem;
       margin: 2rem 0;
+    }
+
+    .disclaimer-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #ea580c;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .disclaimer p {
       color: #9a3412;
-    }
-    footer {
-      text-align: center;
-      padding: 2rem;
       font-size: 0.9rem;
-      color: #999;
-      border-top: 1px solid #eee;
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
     }
+
+    .disclaimer p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-secondary);
+      padding: 3rem 0;
+      text-align: center;
+      margin-top: 4rem;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .footer-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .footer-text {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-text:last-child {
+      margin-bottom: 0;
+    }
+
+    .footer-text strong {
+      color: var(--text-secondary);
+    }
+
+    /* Models Table */
+    .models-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      background: var(--bg-card);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .models-table th {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .models-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .models-table tbody tr:hover {
+      background: var(--bg-secondary);
+      transform: translateX(2px);
+    }
+
+    .models-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .provider-badge {
+      background: var(--secondary);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    .provider-badge.azure {
+      background: #0078d4;
+    }
+
+    .provider-badge.cloudflare {
+      background: #f38020;
+    }
+
+    .provider-badge.scaleway {
+      background: #4f0599;
+    }
+
+    .provider-badge.nasa {
+      background: #fc3d21;
+    }
+
+    .model-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Enhanced Animations */
     @keyframes float {
-      0%, 100% { transform: translateY(0); }
+      0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-10px); }
     }
+
+    @keyframes slideInFromLeft {
+      from { opacity: 0; transform: translateX(-50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideInFromRight {
+      from { opacity: 0; transform: translateX(50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200px 0; }
+      100% { background-position: 200px 0; }
+    }
+
+    .logo {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .feature-card {
+      animation: scaleIn 0.6s ease forwards;
+      animation-delay: calc(var(--delay) * 0.1s);
+    }
+
+    .command-item {
+      animation: slideInFromLeft 0.6s ease forwards;
+      animation-delay: calc(var(--delay) * 0.05s);
+    }
+
+    .models-table tbody tr {
+      animation: slideInFromRight 0.4s ease forwards;
+      animation-delay: calc(var(--delay) * 0.03s);
+    }
+
+    /* Hover Effects */
+    .cta-button {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .cta-button:hover::before {
+      left: 100%;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gradient);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-banner {
+        height: 250px;
+        background-attachment: scroll;
+      }
+
+      .header-content {
+        margin-top: 120px;
+      }
+
+      .logo {
+        font-size: 2.5rem;
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+      }
+
+      .container {
+        padding: 2rem 1rem;
+      }
+
+      .card {
+        padding: 1.5rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .command-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+
+      .models-table {
+        font-size: 0.8rem;
+      }
+
+      .models-table th,
+      .models-table td {
+        padding: 0.75rem 0.5rem;
+      }
+
+      .provider-badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.6rem;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .card:nth-child(2) { animation-delay: 0.1s; }
+    .card:nth-child(3) { animation-delay: 0.2s; }
+    .card:nth-child(4) { animation-delay: 0.3s; }
+    .card:nth-child(5) { animation-delay: 0.4s; }
   </style>
 </head>
 <body>
   <header>
-    <h1>🎉 PraimAI_bot</h1>
-    <p>Первый в Telegram ИИ-чат с уникальными функциями — и всё это бесплатно 🐧🔥</p>
-    <a class="cta-button" href="https://t.me/PraimovAi_bot">🚀 Начать общение</a>
+    <div class="header-banner"></div>
+    <div class="header-content">
+      <h1 class="logo">PraimAI Bot</h1>
+      <p class="subtitle">Твой умный помощник в Telegram • Неограниченные возможности ИИ</p>
+      <a href="https://t.me/PraimovAi_bot" class="cta-button">
+        🚀 Начать общение
+      </a>
+    </div>
   </header>
 
   <div class="container">
     <div class="card">
-      <h2>🧠 Основные команды</h2>
-      <div class="command-item">
-        <code>/ask [вопрос]</code>
-        <div>❓ Задать вопрос модели (подходит и для групп) 💬💡</div>
+      <h2 class="card-title">🧠 Возможности</h2>
+      <div class="features-grid">
+        <div class="feature-card" style="--delay: 1">
+          <div class="feature-icon">💬</div>
+          <h3>Неограниченное общение</h3>
+          <p>Без лимитов в личных сообщениях и группах</p>
+        </div>
+        <div class="feature-card" style="--delay: 2">
+          <div class="feature-icon">🎙</div>
+          <h3>Голосовые сообщения</h3>
+          <p>Поддержка голосовых сообщений и озвучки</p>
+        </div>
+        <div class="feature-card" style="--delay: 3">
+          <div class="feature-icon">🖼</div>
+          <h3>Редактирование изображений</h3>
+          <p>Обработка и редактирование фотографий</p>
+        </div>
+        <div class="feature-card" style="--delay: 4">
+          <div class="feature-icon">🧠</div>
+          <h3>Генерация картинок</h3>
+          <p>Создание изображений по описанию</p>
+        </div>
+        <div class="feature-card" style="--delay: 5">
+          <div class="feature-icon">⚡️</div>
+          <h3>Быстрые ответы</h3>
+          <p>Быстрые и точные ответы на вопросы</p>
+        </div>
+        <div class="feature-card" style="--delay: 6">
+          <div class="feature-icon">🧠</div>
+          <h3>Умный контекст</h3>
+          <p>Помню предыдущие сообщения в беседе</p>
+        </div>
       </div>
-      <div class="command-item">
-        <code>/model</code>
-        <div>⚙️ Выбор модели и характера её ответов 🎭🤖</div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">🛠 Основные команды</h2>
+      <div class="command-list">
+        <div class="command-item" style="--delay: 1">
+          <div class="command-code">/ask [вопрос]</div>
+          <div class="command-desc">Задать вопрос боту (особенно удобно в группах)</div>
+        </div>
+        <div class="command-item" style="--delay: 2">
+          <div class="command-code">/reset</div>
+          <div class="command-desc">Сбросить текущий диалог и память</div>
+        </div>
+        <div class="command-item" style="--delay: 3">
+          <div class="command-code">расскажи [текст]</div>
+          <div class="command-desc">Озвучка ответа (если включена)</div>
+        </div>
+        <div class="command-item" style="--delay: 4">
+          <div class="command-code">/profile</div>
+          <div class="command-desc">Выбор модели ChatGPT (standard, fast, large и др.)</div>
+        </div>
+        <div class="command-item" style="--delay: 5">
+          <div class="command-code">/gpt [prompt]</div>
+          <div class="command-desc">Изменение/редактирование фото в стиле GPT. Необходимо прикрепить изображение</div>
+        </div>
       </div>
-      <div class="command-item">
-        <code>/setup</code>
-        <div>🔧 Расширенное меню:</div>
-        <ul>
-          <li>🎛 Выбрать модель</li>
-          <li>🧩 Настроить характер ответа</li>
-          <li>📊 Посмотреть количество сообщений</li>
-          <li>👁 Узнать текущий стиль общения</li>
-          <li>🔄 Сбросить диалог</li>
-        </ul>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">🤖 Модели PraimovAI</h2>
+      <table class="models-table">
+        <thead>
+          <tr>
+            <th>Модель</th>
+            <th>Провайдер</th>
+            <th>Описание</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="--delay: 1">
+            <td><span class="model-name">DeepSeek Reasoning</span></td>
+            <td><span class="provider-badge azure">Azure</span></td>
+            <td>Расширенная логика и глубокий анализ</td>
+          </tr>
+          <tr style="--delay: 2">
+            <td><span class="model-name">Grok</span></td>
+            <td><span class="provider-badge azure">Azure</span></td>
+            <td>Интеллектуальный разбор сложных текстов</td>
+          </tr>
+          <tr style="--delay: 3">
+            <td><span class="model-name">Llamascout</span></td>
+            <td><span class="provider-badge cloudflare">Cloudflare</span></td>
+            <td>Масштабируемая аналитика данных</td>
+          </tr>
+          <tr style="--delay: 4">
+            <td><span class="model-name">Mistral</span></td>
+            <td><span class="provider-badge cloudflare">Cloudflare</span></td>
+            <td>Компактная и эффективная модель</td>
+          </tr>
+          <tr style="--delay: 5">
+            <td><span class="model-name">OpenAI</span></td>
+            <td><span class="provider-badge azure">Azure</span></td>
+            <td>Универсальная модель для текста и идей</td>
+          </tr>
+          <tr style="--delay: 6">
+            <td><span class="model-name">OpenAI Fast</span></td>
+            <td><span class="provider-badge azure">Azure</span></td>
+            <td>Приоритет — скорость общения</td>
+          </tr>
+          <tr style="--delay: 7">
+            <td><span class="model-name">OpenAI Large</span></td>
+            <td><span class="provider-badge azure">Azure</span></td>
+            <td>Для масштабных и сложных задач</td>
+          </tr>
+          <tr style="--delay: 8">
+            <td><span class="model-name">OpenAI Reasoning</span></td>
+            <td><span class="provider-badge azure">Azure</span></td>
+            <td>Глубокий логический анализ</td>
+          </tr>
+          <tr style="--delay: 9">
+            <td><span class="model-name">Phi</span></td>
+            <td><span class="provider-badge azure">Azure</span></td>
+            <td>Работа с инструкциями и медиа</td>
+          </tr>
+          <tr style="--delay: 10">
+            <td><span class="model-name">Qwen Coder</span></td>
+            <td><span class="provider-badge scaleway">Scaleway</span></td>
+            <td>Оптимизация программного кода</td>
+          </tr>
+          <tr style="--delay: 11">
+            <td><span class="model-name">SearchGPT</span></td>
+            <td><span class="provider-badge azure">Azure</span></td>
+            <td>Поиск с GPT-возможностями</td>
+          </tr>
+          <tr style="--delay: 12">
+            <td><span class="model-name">Bidara</span></td>
+            <td><span class="provider-badge nasa">NASA</span></td>
+            <td>Для научных исследований</td>
+          </tr>
+          <tr style="--delay: 13">
+            <td><span class="model-name">Evil</span></td>
+            <td><span class="provider-badge cloudflare">Cloudflare</span></td>
+            <td>Креативный NSFW-контент</td>
+          </tr>
+          <tr style="--delay: 14">
+            <td><span class="model-name">Unity</span></td>
+            <td><span class="provider-badge cloudflare">Cloudflare</span></td>
+            <td>Максимальная свобода и интеллект</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">🖌 Работа с изображениями</h2>
+      <div class="command-list">
+        <div class="command-item" style="--delay: 1">
+          <div class="command-code">/img [prompt]</div>
+          <div class="command-desc">Генерация изображений по описанию</div>
+        </div>
+        <div class="command-item" style="--delay: 2">
+          <div class="command-code">/gpt [prompt]</div>
+          <div class="command-desc">Редактирование фото как в ChatGPT, но быстрее и бесплатно</div>
+        </div>
       </div>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 1rem;">
+        📎 Для работы команды /gpt необходимо прикрепить изображение к сообщению.
+      </p>
     </div>
 
     <div class="card">
-      <h2>🖼 Работа с изображениями</h2>
-      <ul>
-        <li>🎨 Генерация изображений встроена — просто опиши картинку 🖌️🖼️</li>
-        <li>✍ Для редактирования отправь боту фото + описание изменений 📸📝</li>
-        <li>🚀 Сейчас доступен движок Flux Kontext, soon → GptImage ⚡️</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h2>💬 Дополнительные возможности</h2>
-      <ul>
-        <li>♾ Безлимитное общение</li>
-        <li>🧠 Умный контекст — бот помнит, о чём ты говорил 📝🕵️‍♂️</li>
-        <li>⚡ Быстрые и точные ответы</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h2>👥 Для групп</h2>
-      <p>Просто добавь бота и используй <code>/ask</code> — он поможет участникам чата 🤝💬</p>
-    </div>
-
-    <div class="card">
-      <h2>🧠 Модели</h2>
-      <div class="model-item">💢 PraimovAi</div>
-      <div class="model-item">⚡ OpenAI o4-mini</div>
-      <div class="model-item">🔥 GPT-4.1</div>
-      <div class="model-item">✅ GPT-4.1 mini</div>
-      <div class="model-item">⚡ Qwen 2.5 Coder</div>
-      <div class="model-item">🚀 Mistral Small 3.1</div>
-      <div class="model-item">🎯 Mistral Nemo 2407</div>
-      <div class="model-item">🎨 Phi-4 Instruct</div>
-      <div class="model-item">🚀 Grok</div>
-      <div class="model-item">🔬 Llama 4 Scout</div>
+      <h2 class="card-title">👥 Для групп</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+        Добавь меня в чат и используй /ask — я помогу всем участникам!
+      </p>
     </div>
 
     <div class="disclaimer">
-      ⚠️ Контент, созданный ботом, является вашей ответственностью ⚖️📢
+      <div class="disclaimer-title">
+        ⚠️ Отказ от ответственности
+      </div>
+      <p>
+        Бот не несёт ответственности за созданный с его помощью контент.
+      </p>
+      <p>
+        Используйте возможности осознанно и в соответствии с законодательством.
+      </p>
     </div>
   </div>
 
   <footer>
-    <p>© 2025 PraimAI_bot • Telegram: <strong>@PraimovAi_bot</strong></p>
-    <p>Документация: <a href="https://t.me/PraimAii">t.me/PraimAii</a></p>
+    <div class="footer-content">
+      <div class="footer-logo">PraimAI Bot</div>
+      <p class="footer-text">© 2025 TgPraimov. Все права защищены.</p>
+      <p class="footer-text">Найди <strong>@PraimovAi_bot</strong> в Telegram и начни общение прямо сейчас!</p>
+      <p class="footer-text">Документация: <strong>https://t.me/PraimAii</strong></p>
+    </div>
   </footer>
 </body>
 </html>
